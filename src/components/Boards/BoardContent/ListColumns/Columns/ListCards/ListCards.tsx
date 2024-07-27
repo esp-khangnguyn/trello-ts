@@ -17,9 +17,6 @@ function ListCards({ cards }: { cards: CardProps[] }) {
           m: '0 5px',
           overflowX: 'hidden',
           overflowY: 'scroll',
-          maxHeight: (theme) =>
-            `calc(60px - 
-            ${theme.spacing(5)} - 50px - 56px)`,
           '&::-webkit-scrollbar-thumb': {
             backgroundColor: '#ced0da',
             borderRadius: '8px'

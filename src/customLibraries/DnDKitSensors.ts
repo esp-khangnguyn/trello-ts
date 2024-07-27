@@ -1,8 +1,16 @@
-import { MouseSensor as DnDKitMouseSensor, TouchSensor as DnDKitTouchSensor } from '@dnd-kit/core'
+import {
+  MouseSensor as DnDKitMouseSensor,
+  TouchSensor as DnDKitTouchSensor,
+  MouseSensorOptions,
+  TouchSensorOptions
+} from '@dnd-kit/core'
 
-// Block DnD event propagation if element have "data-no-dnd" attribute
-const handler = ({ nativeEvent: event }) => {
-  let cur = event.target
+// Block DnD event propagation if element has "data-no-dnd" attribute
+const handler = (
+  { nativeEvent }: { nativeEvent: MouseEvent | TouchEvent },
+  { onActivation }: MouseSensorOptions | TouchSensorOptions
+): boolean => {
+  let cur: HTMLElement | null = nativeEvent.target as HTMLElement
 
   while (cur) {
     if (cur.dataset && cur.dataset.noDnd) {
@@ -15,9 +23,19 @@ const handler = ({ nativeEvent: event }) => {
 }
 
 export class MouseSensor extends DnDKitMouseSensor {
-  static activators = [{ eventName: 'onMouseDown', handler }]
+  static activators = [
+    {
+      eventName: 'onMouseDown' as const,
+      handler
+    }
+  ]
 }
 
 export class TouchSensor extends DnDKitTouchSensor {
-  static activators = [{ eventName: 'onTouchStart', handler }]
+  static activators = [
+    {
+      eventName: 'onTouchStart' as const,
+      handler
+    }
+  ]
 }

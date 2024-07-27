@@ -3,6 +3,20 @@ import AppBar from '@/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 import { useEffect, useState } from 'react'
+// import {
+//   fetchBoardDetailsAPI,
+//   createNewCardAPI,
+//   createNewColumnAPI,
+//   updateBoardDetailsAPI,
+//   updateColumnDetailsAPI,
+//   moveCardToOtherColumnAPI,
+//   deleteColumnDetailsAPI
+// } from '@/api'
+import { isEmpty } from 'lodash'
+import { generatePlaceHolderCard } from '@/utils/formatters'
+import { mapOrder } from '@/utils/sorts'
+import { toast } from 'react-toastify'
+import { ColumnProps } from '@/interfaces/columnInterface'
 import {
   fetchBoardDetailsAPI,
   createNewCardAPI,
@@ -12,14 +26,10 @@ import {
   moveCardToOtherColumnAPI,
   deleteColumnDetailsAPI
 } from '@/api'
-import { isEmpty } from 'lodash'
-import { generatePlaceHolderCard } from '@/utils/formatters'
-import { mapOrder } from '@/utils/sorts'
-import { toast } from 'react-toastify'
-import { ColumnProps } from '@/interfaces/columnInterface'
+import { CardProps } from '@/interfaces/cardInterface'
 
 function Board() {
-  const [board, setBoard] = useState(null)
+  const [board, setBoard] = useState<any>(null)
 
   useEffect(() => {
     const boardId = '669a819312719b90a5a17f2e'
@@ -39,7 +49,7 @@ function Board() {
     })
   }, [])
 
-  const createNewColumn = async (newColumnData) => {
+  const createNewColumn = async (newColumnData: { boardId: string; title: string }) => {
     const createdColumn = await createNewColumnAPI({
       ...newColumnData,
       boardId: board._id
@@ -54,18 +64,18 @@ function Board() {
     setBoard(newBoard)
   }
 
-  const createNewCard = async (newCardData) => {
+  const createNewCard = async (newCardData: { boardId: string; columnId: string; title: string }) => {
     const createdCard = await createNewCardAPI({
       ...newCardData,
       boardId: board._id
     })
 
     const newBoard = { ...board }
-    const columnUpdate = newBoard.columns.find((column) => column._id === createdCard.columnId)
+    const columnUpdate = newBoard.columns.find((column: ColumnProps) => column._id === createdCard.columnId)
 
     if (columnUpdate) {
       // Xử lí việc đẩy cả thẻ fake vào column dẫn đến lỗi => loại nó ra rồi thêm
-      if (columnUpdate.cards.some((card) => card.FE_PlaceholderCard)) {
+      if (columnUpdate.cards.some((card: any) => card.FE_PlaceholderCard)) {
         columnUpdate.cards = [createdCard]
         columnUpdate.cardOrderIds = []
       } else {
@@ -77,7 +87,9 @@ function Board() {
     setBoard(newBoard)
   }
 
-  const moveColumns = (dndOrderedColumns) => {
+  const moveColumns = (dndOrderedColumns: ColumnProps[]) => {
+    console.log('dnd: ', dndOrderedColumns)
+
     const dndOrderColumnIds = dndOrderedColumns.map((c) => c?._id)
     const newBoard = { ...board }
     newBoard.columns = dndOrderedColumns
@@ -91,10 +103,10 @@ function Board() {
     })
   }
 
-  const moveCardInTheSameColumn = (dndOrderCard, dndOrderCardIds, columnId) => {
+  const moveCardInTheSameColumn = (dndOrderCard: CardProps[], dndOrderCardIds: string[], columnId: string) => {
     console.log(columnId)
     const newBoard = { ...board }
-    const columnUpdate = newBoard.columns.find((column) => column._id === columnId)
+    const columnUpdate = newBoard.columns.find((column: ColumnProps) => column._id === columnId)
 
     if (columnUpdate) {
       columnUpdate.cards = dndOrderCard
@@ -107,30 +119,39 @@ function Board() {
     updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderCardIds })
   }
 
-  const moveCardToOtherColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderColumns) => {
+  const moveCardToOtherColumn = (
+    currentCardId: string,
+    prevColumnId: string,
+    nextColumnId: string,
+    dndOrderColumns: ColumnProps[]
+  ) => {
     const dndOrderColumnIds = dndOrderColumns.map((c) => c?._id)
     const newBoard = { ...board }
     newBoard.columns = dndOrderColumns
     newBoard.columnOrderIds = dndOrderColumnIds
     setBoard(newBoard)
 
-    let prevCardOrderIds = dndOrderColumns.find((c) => c._id === prevColumnId).cardOrderIds
+    let prevColumns: any = dndOrderColumns.find((c: ColumnProps) => c._id === prevColumnId)
+    let nextColumns: any = dndOrderColumns.find((c: ColumnProps) => c._id === nextColumnId)
+
+    let prevCardOrderIds = prevColumns.cardOrderIds
 
     if (prevCardOrderIds[0].includes('placehorder-card')) prevCardOrderIds = []
+
     moveCardToOtherColumnAPI({
       currentCardId,
       prevColumnId,
       prevCardOrderIds,
       nextColumnId,
-      nextCardOrderIds: dndOrderColumns.find((c) => c._id === nextColumnId).cardOrderIds
+      nextCardOrderIds: nextColumns.cardOrderIds
     })
   }
 
-  const deleteColumnDetails = (columnId) => {
+  const deleteColumnDetails = (columnId: string) => {
     // update chuẩn dữ liệu board
     const newBoard = { ...board }
-    newBoard.columns = newBoard.columns.filter((c) => c._id !== columnId)
-    newBoard.columnOrderIds = newBoard.columnOrderIds.filter((_id) => _id !== columnId)
+    newBoard.columns = newBoard.columns.filter((c: ColumnProps) => c._id !== columnId)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter((_id: string) => _id !== columnId)
 
     setBoard(newBoard)
 

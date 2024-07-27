@@ -109,7 +109,7 @@ const Column: React.FC<ColumnProps> = ({ column, createNewCard, deleteColumnDeta
   }
 
   return (
-    <div ref={setNodeRef} style={dndKitColumnStyle} {...attributes}>
+    <Box ref={setNodeRef} style={dndKitColumnStyle} {...attributes}>
       <Box
         {...listeners}
         sx={{
@@ -118,8 +118,7 @@ const Column: React.FC<ColumnProps> = ({ column, createNewCard, deleteColumnDeta
           bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : '#ebecf0'),
           ml: 2,
           borderRadius: '6px',
-          height: 'fit-content',
-          maxHeight: (theme) => `calc( 100vh - ${APP_BAR_HEIGHT} - ${APP_BOARD_HEIGHT} - ${theme.spacing(5)})`
+          height: 'fit-content'
         }}
       >
         {/* Box Column Header */}
@@ -332,7 +331,7 @@ const Column: React.FC<ColumnProps> = ({ column, createNewCard, deleteColumnDeta
           )}
         </Box>
       </Box>
-    </div>
+    </Box>
   )
 }
 

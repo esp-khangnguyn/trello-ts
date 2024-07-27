@@ -6,12 +6,29 @@ import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/s
 import { ToastContainer } from 'react-toastify'
 // import 'react-toastify/dist/ReactToastify.css'
 import theme from './theme'
+import { ConfirmProvider } from 'material-ui-confirm'
 export default function Home() {
   return (
     <CssVarsProvider theme={theme}>
-      <CssBaseline />
-      <Board />
-      <ToastContainer position="bottom-left" theme="colored" />
+      <ConfirmProvider
+        defaultOptions={{
+          dialogProps: {
+            maxWidth: 'xs'
+          },
+          allowClose: false,
+          confirmationButtonProps: {
+            color: 'secondary',
+            variant: 'outlined'
+          },
+          cancellationButtonProps: {
+            color: 'inherit'
+          }
+        }}
+      >
+        <CssBaseline />
+        <Board />
+        <ToastContainer position="bottom-left" theme="colored" />
+      </ConfirmProvider>
     </CssVarsProvider>
   )
 }

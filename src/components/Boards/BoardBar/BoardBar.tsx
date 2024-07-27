@@ -6,13 +6,7 @@ import AvatarGroup from '@mui/material/AvatarGroup'
 import Chip from '@mui/material/Chip'
 import { capitalizeFirstLetter } from '@/utils/formatters'
 
-import {
-  AddToDrive,
-  Bolt,
-  FilterList,
-  PersonAdd,
-  VpnLock
-} from '@mui/icons-material'
+import { AddToDrive, Bolt, FilterList, PersonAdd, VpnLock } from '@mui/icons-material'
 
 const MENU_STYLES = {
   color: 'white',
@@ -42,8 +36,7 @@ function BoardBar({ board }) {
         gap: 2,
         paddingX: 2,
         overflowX: 'auto',
-        bgcolor: (theme) =>
-          theme.palette.mode == 'dark' ? '#34495e' : '#1976d2',
+        bgcolor: (theme) => (theme.palette.mode == 'dark' ? '#34495e' : '#1976d2'),
         borderBottom: '1px solid #00bfa5'
       }}
     >
@@ -55,25 +48,10 @@ function BoardBar({ board }) {
         }}
       >
         <Tooltip title={board?.description}>
-          <Chip
-            sx={MENU_STYLES}
-            icon={<DashboardIcon />}
-            label={board?.title}
-            clickable
-          />
+          <Chip sx={MENU_STYLES} icon={<DashboardIcon />} label={board?.title} clickable />
         </Tooltip>
-        <Chip
-          sx={MENU_STYLES}
-          icon={<VpnLock />}
-          label={capitalizeFirstLetter(board?.type)}
-          clickable
-        />
-        <Chip
-          sx={MENU_STYLES}
-          icon={<AddToDrive />}
-          label="add-to-drive"
-          clickable
-        />
+        <Chip sx={MENU_STYLES} icon={<VpnLock />} label={capitalizeFirstLetter(board?.type)} clickable />
+        <Chip sx={MENU_STYLES} icon={<AddToDrive />} label="add-to-drive" clickable />
         <Chip sx={MENU_STYLES} icon={<Bolt />} label="automation" clickable />
         <Chip sx={MENU_STYLES} icon={<FilterList />} label="filter" clickable />
       </Box>

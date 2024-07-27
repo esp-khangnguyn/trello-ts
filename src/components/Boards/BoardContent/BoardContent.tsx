@@ -19,6 +19,8 @@ import { generatePlaceHolderCard } from '@/utils/formatters'
 import Column from './ListColumns/Columns/Column'
 import Card from './ListColumns/Columns/ListCards/Card/Card'
 import ListColumns from './ListColumns/ListColumns'
+import { CardDataInterface } from '@/interfaces/cardDataInterface'
+import { ColumnProps } from '@/interfaces/columnInterface'
 
 const ACTIVE_FRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_FRAG_ITEM_TYPE_COLUMN',
@@ -60,8 +62,8 @@ function BoardContent({
   }, [board])
 
   // Tìm Column theo CardId, vào oderColumn, duyệt với mỗi column thì map các card trong nó và trả về một mảng gồm id các card với điều kiện mảng đó include cardId đã chuyền vào
-  const findColumnByCardId = (cardId) =>
-    orderColumns.find((column) => column.cards.map((card) => card._id)?.includes(cardId))
+  const findColumnByCardId = (cardId: string) =>
+    orderColumns.find((column: ColumnProps) => column.cards.map((card: any) => card._id)?.includes(cardId))
 
   const moveCardBetweenDifferentColumn = (
     overColumn: any,
@@ -74,25 +76,25 @@ function BoardContent({
     triggerFrom: any
   ) => {
     setOrderColumns((prevColumns) => {
-      const overCardIndex = overColumn?.cards?.findIndex((card) => card._id === overCardId)
+      const overCardIndex = overColumn?.cards?.findIndex((card: CardDataInterface) => card._id === overCardId)
       const isBelowOverItem =
         active.rect.current.translated && active.rect.current.translated.top > over.rect.top + over.rect.height
       const modifier = isBelowOverItem ? 1 : 0
       let newCardIndex = overCardIndex >= 0 ? overCardIndex + modifier : overColumn?.cards?.length + 1
       const nextColumns = cloneDeep(prevColumns)
-      const nextActiveColumns = nextColumns.find((column) => column._id === activeColumn._id)
-      const nextOverColumns = nextColumns.find((column) => column._id === overColumn._id)
+      const nextActiveColumns: any = nextColumns.find((column: ColumnProps) => column._id === activeColumn._id)
+      const nextOverColumns = nextColumns.find((column: ColumnProps) => column._id === overColumn._id)
       if (nextActiveColumns) {
-        nextActiveColumns.cards = nextActiveColumns.cards.filter((card) => card._id !== activeDraggingCardId)
+        nextActiveColumns.cards = nextActiveColumns.cards.filter((card: CardProps) => card._id !== activeDraggingCardId)
 
         if (isEmpty(nextActiveColumns.cards)) {
           nextActiveColumns.cards = [generatePlaceHolderCard(nextActiveColumns)]
         }
 
-        nextActiveColumns.cardOrderIds = nextActiveColumns.cards.map((card) => card._id)
+        nextActiveColumns.cardOrderIds = nextActiveColumns.cards.map((card: CardProp) => card._id)
       }
       if (nextOverColumns) {
-        nextOverColumns.cards = nextOverColumns.cards.filter((card) => card._id !== activeDraggingCardId)
+        nextOverColumns.cards = nextOverColumns.cards.filter((card: CardProps) => card._id !== activeDraggingCardId)
         // kiem tra cái card kéo có đango ở columns target hay chưa, có thì xóa đi
         nextOverColumns.cards = nextOverColumns.cards.toSpliced(newCardIndex, 0, activeDraggingCardData)
 
