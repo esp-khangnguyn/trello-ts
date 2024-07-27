@@ -5,7 +5,7 @@ import { CssBaseline } from '@mui/material'
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles'
 import { ToastContainer } from 'react-toastify'
 // import 'react-toastify/dist/ReactToastify.css'
-import theme from './theme'
+import theme from '@/app/theme'
 import { ConfirmProvider } from 'material-ui-confirm'
 export default function Home() {
   return (
